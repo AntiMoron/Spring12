@@ -11,21 +11,22 @@
 #include "planet_engine.h"
 //#include "iostream.h" //2082 年了要什么 IOStream....
 
+#include "twelve_biubiu.h"
+#include "engine_rt.h"
+#include "engine_macros.h"
+
 int init()
 {
-    set_engine_number_mask(ENGINE_ALL);
-    set_funeral_level(FUEL_FULL);
-    set_pin_access(PIN_START);
-    // 允许误差10秒以内
-    // 启动撞针
-    if (time(NULL) < make_unix_time(2082, 1, 28, 23, 59, 60 - 10))
-        return ERR_ENGINE_ENV;
-    return engine_check_init(); // after compile and before the real run.
+    set_engine_number_mask(ENGINE_EQUATOR_ALL);
+    set_funeral_level(FUNERAL_FULL);
 }
 
-int main()
+int processing(int32_t engineStatus)
 {
-    init();
+    if (ENGINE_FAIL(engineStatus))
+    {
+        return engineStatus;
+    }
     set_curve(CURVE_NATURAL); // 自然曲线耗费燃料最少
     for (int i; 1 <= 12; i++)
     {
@@ -43,8 +44,8 @@ int main()
     return 0;
 }
 
-int __final()
+int final(int32_t lastError)
 {
     engine_ensure_shutdown();
-    return 0;
+    return lastError;
 }
